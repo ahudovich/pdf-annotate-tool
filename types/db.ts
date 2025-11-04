@@ -11,6 +11,7 @@ export interface DocumentItem {
 
 export interface HighlightItem {
   id: string
+  documentId: string
   type: HighlightType
   createdAt: string // ISO string
   content: Content

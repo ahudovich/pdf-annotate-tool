@@ -54,7 +54,7 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <aside
       className={cn(
-        'bg-background grid h-full w-72 grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden',
+        'bg-background grid h-full w-80 grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden',
         className
       )}
     >
@@ -120,7 +120,7 @@ function DocumentCard({ document }: { document: DocumentItem }) {
   return (
     <div
       className={cn(
-        'border-border hover:bg-accent/25 grid w-full cursor-pointer grid-cols-[auto_1fr] items-start gap-2.5 border-b p-4 text-left transition-colors',
+        'border-border hover:bg-accent/25 grid w-full cursor-pointer grid-cols-[auto_1fr] gap-2.5 border-b p-4 transition-colors',
         selectedDocumentId === document.id && 'bg-accent hover:bg-accent'
       )}
       onClick={() => setSelectedDocumentId(document.id)}

@@ -5,14 +5,17 @@ import {
   usePdfHighlighterContext,
 } from 'react-pdf-highlighter-extended'
 import { ViewerCommentForm } from '@/components/app/viewer/ViewerCommentForm'
+import { useDatabase } from '@/contexts/db.context'
 
 interface ViewerTooltipProps {
-  addHighlight: (highlight: GhostHighlight, comment: string) => void
+  addHighlight: (documentId: string, highlight: GhostHighlight, comment: string) => void
 }
 
 export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
   const [compact, setCompact] = useState(true)
   const selectionRef = useRef<PdfSelection | null>(null)
+
+  const { selectedDocumentId } = useDatabase()
 
   const { getCurrentSelection, removeGhostHighlight, setTip, updateTipPosition } =
     usePdfHighlighterContext()
@@ -22,10 +25,9 @@ export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
   }, [compact, updateTipPosition])
 
   return (
-    <div className="Tip">
+    <div>
       {compact ? (
         <button
-          className="Tip__compact"
           onClick={() => {
             setCompact(false)
             selectionRef.current = getCurrentSelection()
@@ -39,6 +41,7 @@ export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
           placeHolder="Your comment..."
           onSubmit={(input) => {
             addHighlight(
+              selectedDocumentId!,
               {
                 content: selectionRef.current!.content,
                 type: selectionRef.current!.type,

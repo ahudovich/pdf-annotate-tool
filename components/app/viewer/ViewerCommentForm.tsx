@@ -15,7 +15,7 @@ export function ViewerCommentForm({ onSubmit }: ViewerCommentFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <textarea value={input} onChange={(event) => setInput(event.target.value)} />
+      <textarea autoFocus value={input} onChange={(event) => setInput(event.target.value)} />
       <button type="submit">Save</button>
     </form>
   )

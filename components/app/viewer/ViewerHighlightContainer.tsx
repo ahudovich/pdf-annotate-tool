@@ -71,8 +71,8 @@ export function ViewerHighlightContainer({
 
 function ViewerHighlightPopup({ highlight }: { highlight: ViewportHighlight<HighlightItem> }) {
   return highlight.comment ? (
-    <div className="Highlight__popup">{highlight.comment}</div>
+    <div className="">{highlight.comment}</div>
   ) : (
-    <div className="Highlight__popup">Comment has no Text</div>
+    <div className="">Comment has no Text</div>
   )
 }
