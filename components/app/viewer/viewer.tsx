@@ -72,7 +72,7 @@ export function Viewer({ className }: { className?: string }) {
   return (
     <ViewerWrapper className={cn('relative', className)}>
       <ViewerToolbar name={pdfDocument.name} setPdfScaleValue={setPdfScaleValue} />
-      <PdfLoader document={fileUrl}>
+      <PdfLoader document={fileUrl} beforeLoad={() => null}>
         {(pdfDocument) => (
           <PdfHighlighter
             pdfDocument={pdfDocument}
@@ -97,5 +97,5 @@ export function Viewer({ className }: { className?: string }) {
 }
 
 function ViewerWrapper({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <main className={cn('border-border border-x bg-zinc-50', className)}>{children}</main>
+  return <main className={cn('border-border border-x bg-zinc-100', className)}>{children}</main>
 }

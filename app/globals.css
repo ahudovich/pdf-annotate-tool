@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --toolbar-height: 4rem;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -122,5 +126,25 @@
   /* PDF Highlighter */
   .pdfViewer .page {
     @apply mb-0!;
+  }
+
+  .PdfHighlighter {
+    @apply h-[calc(100dvh-var(--toolbar-height))]! bg-transparent!;
+  }
+
+  .PdfHighlighter::-webkit-scrollbar-thumb {
+    @apply bg-zinc-400!;
+  }
+
+  .PdfHighlighter::-webkit-scrollbar-track {
+    @apply bg-zinc-100!;
+  }
+
+  .PdfHighlighter::-webkit-scrollbar-track-piece {
+    @apply bg-zinc-100!;
+  }
+
+  .pdfViewer {
+    @apply py-12!;
   }
 }

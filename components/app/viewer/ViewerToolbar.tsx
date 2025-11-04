@@ -37,7 +37,7 @@ export function ViewerToolbar({ name, setPdfScaleValue }: ViewerToolbarProps) {
   }
 
   return (
-    <div className="border-border flex items-center justify-between gap-2 border-b bg-white px-4 py-3">
+    <div className="border-border flex h-(--toolbar-height) items-center justify-between gap-2 border-b bg-white px-4">
       <h2 className="font-semibold">{name}</h2>
 
       <div className="flex items-center gap-2">

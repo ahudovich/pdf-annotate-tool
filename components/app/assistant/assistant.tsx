@@ -22,7 +22,7 @@ export function Assistant({ className }: { className?: string }) {
       )}
     >
       {/* Header */}
-      <div className="border-border border-b p-4">
+      <div className="border-border flex h-(--toolbar-height) items-center border-b px-4">
         <h2 className="text-foreground text-lg font-bold">Assistant</h2>
       </div>
 
