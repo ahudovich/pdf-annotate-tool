@@ -2,12 +2,13 @@
 
 import { useId, useState } from 'react'
 import { format, parseISO } from 'date-fns'
-import { FileTextIcon, SearchIcon, UploadIcon, XIcon } from 'lucide-react'
+import { FileTextIcon, SearchIcon, TrashIcon, UploadIcon, XIcon } from 'lucide-react'
 import { nanoid } from 'nanoid'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDocuments } from '@/contexts/documents.context'
+import { useHighlights } from '@/contexts/highlights.context'
 import { convertBytesToMB } from '@/lib/file'
 import { cn } from '@/lib/utils'
 import type { DocumentItem } from '@/types/db'
@@ -16,7 +17,9 @@ export function Sidebar({ className }: { className?: string }) {
   const id = useId()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const { documents, setSelectedDocumentId, addDocument } = useDocuments()
+  const { highlights, deleteHighlight } = useHighlights()
+  const { documents, selectedDocumentId, setSelectedDocumentId, addDocument, deleteDocument } =
+    useDocuments()
 
   const filteredDocuments = documents.filter((document) =>
     document.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -48,6 +51,20 @@ export function Sidebar({ className }: { className?: string }) {
 
       // Automatically select the first uploaded file
       setSelectedDocumentId(firstDocumentId)
+    }
+  }
+
+  function handleDeleteDocument(id: string) {
+    deleteDocument(id)
+
+    const documentHighlights = highlights.filter((highlight) => highlight.documentId === id)
+
+    for (const highlight of documentHighlights) {
+      deleteHighlight(highlight.id)
+    }
+
+    if (selectedDocumentId === id) {
+      setSelectedDocumentId(null)
     }
   }
 
@@ -107,20 +124,30 @@ export function Sidebar({ className }: { className?: string }) {
       {/* Document list */}
       <ScrollArea className="h-full">
         {filteredDocuments.map((document) => (
-          <DocumentCard key={document.id} document={document} />
+          <DocumentCard
+            key={document.id}
+            document={document}
+            handleDeleteDocument={handleDeleteDocument}
+          />
         ))}
       </ScrollArea>
     </aside>
   )
 }
 
-function DocumentCard({ document }: { document: DocumentItem }) {
+function DocumentCard({
+  document,
+  handleDeleteDocument,
+}: {
+  document: DocumentItem
+  handleDeleteDocument: (id: string) => void
+}) {
   const { selectedDocumentId, setSelectedDocumentId } = useDocuments()
 
   return (
     <div
       className={cn(
-        'border-border hover:bg-accent/25 grid w-full cursor-pointer grid-cols-[auto_1fr] gap-2.5 border-b p-4 transition-colors',
+        'group relative border-border hover:bg-accent/50 grid w-full cursor-pointer grid-cols-[auto_1fr] gap-2.5 border-b p-4 transition-colors',
         selectedDocumentId === document.id && 'bg-accent hover:bg-accent'
       )}
       onClick={() => setSelectedDocumentId(document.id)}
@@ -130,7 +157,7 @@ function DocumentCard({ document }: { document: DocumentItem }) {
       </div>
 
       <div className="grow overflow-hidden">
-        <h2 className="text-foreground mb-1.5 truncate text-sm font-medium">{document.name}</h2>
+        <h2 className="text-foreground mb-1.5 pr-8 truncate text-sm font-medium">{document.name}</h2>
         <ul className="text-muted-foreground flex items-center text-xs">
           <li className="after:mx-1 after:content-['•']">
             {format(parseISO(document.createdAt), 'MMM d, yyyy')}
@@ -138,6 +165,15 @@ function DocumentCard({ document }: { document: DocumentItem }) {
           <li>{convertBytesToMB(document.size)}</li>
         </ul>
       </div>
+
+      <Button
+        className="absolute top-2 right-2 invisible opacity-0 transition-all group-hover:visible group-hover:opacity-100"
+        size="sm"
+        variant="ghost"
+        onClick={() => handleDeleteDocument(document.id)}
+      >
+        <TrashIcon className="size-3.5" />
+      </Button>
     </div>
   )
 }
