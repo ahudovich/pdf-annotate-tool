@@ -1,0 +1,6 @@
+.next
+.vscode
+.git
+node_modules
+*.yaml
+*.md
