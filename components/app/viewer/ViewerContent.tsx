@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { PdfHighlighter, PdfLoader } from 'react-pdf-highlighter-extended'
 import { ViewerHighlightContainer } from '@/components/app/viewer/ViewerHighlightContainer'
 import { ViewerToolbar } from '@/components/app/viewer/ViewerToolbar'
 import { ViewerTooltip } from '@/components/app/viewer/ViewerTooltip'
 import { useDatabase } from '@/contexts/db.context'
 import { useHighlights } from '@/contexts/highlights.context'
+import { useHashChange } from '@/hooks/useHashChange'
 import type { PdfHighlighterUtils } from 'react-pdf-highlighter-extended'
 import type { DocumentItem } from '@/types/db'
 
@@ -24,23 +25,8 @@ export function ViewerContent({
   const { selectedDocumentId } = useDatabase()
   const { highlights, addHighlight } = useHighlights()
 
-  const onHashChange = useEffectEvent(() => {
-    const id = document.location.hash.slice('#highlight-'.length)
-    const highlight = highlights.find((highlight) => highlight.id === id)
-
-    if (highlight && highlighterUtilsRef.current) {
-      highlighterUtilsRef.current.scrollToHighlight(highlight)
-    }
-  })
-
-  // Hash listeners for autoscrolling to highlights
-  useEffect(() => {
-    window.addEventListener('hashchange', onHashChange)
-
-    return () => {
-      window.removeEventListener('hashchange', onHashChange)
-    }
-  }, [])
+  // Auto scroll to highlights when hash changes
+  useHashChange({ highlights, highlighterUtilsRef })
 
   const filteredHighlights = highlights.filter(
     (highlight) => highlight.documentId === selectedDocumentId
