@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 
 interface ViewerCommentFormProps {
-  onSubmit: (input: string) => void
-  placeHolder?: string
+  onSubmit: (comment: string) => void
 }
 
 export function ViewerCommentForm({ onSubmit }: ViewerCommentFormProps) {
@@ -14,9 +15,17 @@ export function ViewerCommentForm({ onSubmit }: ViewerCommentFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea autoFocus value={input} onChange={(event) => setInput(event.target.value)} />
-      <button type="submit">Save</button>
+    <form className="grid gap-2" onSubmit={handleSubmit}>
+      <Textarea
+        className="resize-none"
+        autoFocus
+        placeholder="Your comment..."
+        value={input}
+        onChange={(event) => setInput(event.target.value)}
+      />
+      <Button size="sm" variant="outline" type="submit">
+        Save
+      </Button>
     </form>
   )
 }

@@ -12,7 +12,7 @@ interface ViewerTooltipProps {
 }
 
 export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
-  const [compact, setCompact] = useState(true)
+  const [isCompact, setIsCompact] = useState(true)
   const selectionRef = useRef<PdfSelection | null>(null)
 
   const { selectedDocumentId } = useDatabase()
@@ -22,14 +22,30 @@ export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
 
   useLayoutEffect(() => {
     updateTipPosition!()
-  }, [compact, updateTipPosition])
+  }, [isCompact, updateTipPosition])
+
+  function handleAddHighlight(comment: string) {
+    addHighlight(
+      selectedDocumentId!,
+      {
+        content: selectionRef.current!.content,
+        type: selectionRef.current!.type,
+        position: selectionRef.current!.position,
+      },
+      comment
+    )
+
+    removeGhostHighlight()
+    setTip(null)
+  }
 
   return (
-    <div>
-      {compact ? (
+    <div className="border-border overflow-hidden rounded-lg border bg-white shadow-xl">
+      {isCompact ? (
         <button
+          className="cursor-pointer px-3 py-1 text-sm font-medium transition-colors hover:bg-zinc-100"
           onClick={() => {
-            setCompact(false)
+            setIsCompact(false)
             selectionRef.current = getCurrentSelection()
             selectionRef.current!.makeGhostHighlight()
           }}
@@ -37,23 +53,9 @@ export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
           Add highlight
         </button>
       ) : (
-        <ViewerCommentForm
-          placeHolder="Your comment..."
-          onSubmit={(input) => {
-            addHighlight(
-              selectedDocumentId!,
-              {
-                content: selectionRef.current!.content,
-                type: selectionRef.current!.type,
-                position: selectionRef.current!.position,
-              },
-              input
-            )
-
-            removeGhostHighlight()
-            setTip(null)
-          }}
-        />
+        <div className="w-48 p-2">
+          <ViewerCommentForm onSubmit={handleAddHighlight} />
+        </div>
       )}
     </div>
   )

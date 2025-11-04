@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MinusIcon, PlusIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react'
+import { ZoomInIcon, ZoomOutIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface ViewerToolbarProps {
