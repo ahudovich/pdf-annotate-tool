@@ -72,7 +72,7 @@ export function ViewerHighlightContainer({
 function ViewerHighlightPopup({ highlight }: { highlight: ViewportHighlight<HighlightItem> }) {
   return (
     <div className="border-border overflow-hidden rounded-lg border bg-white px-4 py-2 text-sm shadow-xl">
-      {highlight.comment ?? 'No comment for this highlight'}
+      {highlight.comment || 'No comment for this highlight'}
     </div>
   )
 }

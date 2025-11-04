@@ -23,7 +23,8 @@ export function Assistant({ className }: { className?: string }) {
 
   const filteredHighlights = currentDocumentHighlights.filter(
     (highlight) =>
-      highlight.content.text?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false
+      highlight.content.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      highlight.comment?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (

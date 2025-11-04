@@ -37,14 +37,10 @@ export function Viewer({ className }: { className?: string }) {
 
   // Hash listeners for autoscrolling to highlights
   useEffect(() => {
-    function scrollToHighlightFromHash() {
-      onHashChange()
-    }
-
-    window.addEventListener('hashchange', scrollToHighlightFromHash)
+    window.addEventListener('hashchange', onHashChange)
 
     return () => {
-      window.removeEventListener('hashchange', scrollToHighlightFromHash)
+      window.removeEventListener('hashchange', onHashChange)
     }
   }, [])
 
@@ -103,13 +99,12 @@ export function Viewer({ className }: { className?: string }) {
             pdfDocument={pdfDocument}
             pdfScaleValue={pdfScaleValue}
             highlights={filteredHighlights}
-            enableAreaSelection={(event) => event.altKey}
-            utilsRef={(_pdfHighlighterUtils) => {
-              highlighterUtilsRef.current = _pdfHighlighterUtils
-            }}
             onScrollAway={() => (document.location.hash = '')}
             selectionTip={<ViewerTooltip addHighlight={addHighlight} />}
             textSelectionColor="rgba(255, 226, 143, 1)"
+            utilsRef={(pdfHighlighterUtils) => {
+              highlighterUtilsRef.current = pdfHighlighterUtils
+            }}
           >
             <ViewerHighlightContainer
               editHighlight={editHighlight}
