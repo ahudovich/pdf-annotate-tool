@@ -37,7 +37,7 @@ export function AssistantChatPrompt({
           <PromptInputBody>
             <PromptInputTextarea
               className="max-h-24"
-              placeholder="Enter your question here..."
+              placeholder="Type something to see the response..."
               ref={textareaRef}
             />
           </PromptInputBody>
