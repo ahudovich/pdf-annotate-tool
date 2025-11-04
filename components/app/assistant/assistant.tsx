@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { format, parseISO } from 'date-fns'
-import { TrashIcon } from 'lucide-react'
+import { SearchIcon, TrashIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDatabase } from '@/contexts/db.context'
 import { useHighlights } from '@/contexts/highlights.context'
@@ -10,23 +12,53 @@ import { cn } from '@/lib/utils'
 import type { HighlightItem } from '@/types/db'
 
 export function Assistant({ className }: { className?: string }) {
+  const [searchQuery, setSearchQuery] = useState('')
+
   const { highlights } = useHighlights()
   const { selectedDocumentId } = useDatabase()
 
-  const filteredHighlights = highlights.filter(
+  const currentDocumentHighlights = highlights.filter(
     (highlight) => highlight.documentId === selectedDocumentId
+  )
+
+  const filteredHighlights = currentDocumentHighlights.filter(
+    (highlight) =>
+      highlight.content.text?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false
   )
 
   return (
     <aside
       className={cn(
-        'bg-background grid h-full w-80 grid-rows-[auto_minmax(0,1fr)] overflow-hidden',
+        'bg-background grid h-full w-80 grid-rows-[auto_auto_minmax(0,1fr)] overflow-hidden',
         className
       )}
     >
       {/* Header */}
       <div className="border-border flex h-(--toolbar-height) items-center border-b px-4">
         <h2 className="text-foreground text-lg font-bold">Assistant</h2>
+      </div>
+
+      {/* Search */}
+      <div className="border-border border-b p-4">
+        <div className="relative">
+          <SearchIcon className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+          <Input
+            className="px-8"
+            placeholder="Search highlights..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
+
+          {searchQuery && (
+            <button
+              type="button"
+              className="group absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer"
+              onClick={() => setSearchQuery('')}
+            >
+              <XIcon className="text-muted-foreground group-hover:text-primary size-3.5 transition-colors" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Highlights list */}
