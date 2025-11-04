@@ -38,8 +38,15 @@ export function Assistant({ className }: { className?: string }) {
 }
 
 function HighlightCard({ highlight }: { highlight: HighlightItem }) {
+  function handleClick() {
+    document.location.hash = `highlight-${highlight.id}`
+  }
+
   return (
-    <div className="border-border hover:bg-accent/50 w-full cursor-pointer border-b p-4 transition-colors">
+    <div
+      className="border-border hover:bg-accent/50 w-full cursor-pointer border-b p-4 transition-colors"
+      onClick={handleClick}
+    >
       <p className="text-foreground line-clamp-2 text-sm">{highlight.content.text}</p>
 
       {highlight.comment && (

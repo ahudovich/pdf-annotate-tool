@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { PdfHighlighter, PdfLoader } from 'react-pdf-highlighter-extended'
 import { ViewerCommentForm } from '@/components/app/viewer/ViewerCommentForm'
 import { ViewerHighlightContainer } from '@/components/app/viewer/ViewerHighlightContainer'
@@ -25,6 +25,28 @@ export function Viewer({ className }: { className?: string }) {
   const filteredHighlights = highlights.filter(
     (highlight) => highlight.documentId === selectedDocumentId
   )
+
+  const onHashChange = useEffectEvent(() => {
+    const id = document.location.hash.slice('#highlight-'.length)
+    const highlight = highlights.find((highlight) => highlight.id === id)
+
+    if (highlight && highlighterUtilsRef.current) {
+      highlighterUtilsRef.current.scrollToHighlight(highlight)
+    }
+  })
+
+  // Hash listeners for autoscrolling to highlights
+  useEffect(() => {
+    function scrollToHighlightFromHash() {
+      onHashChange()
+    }
+
+    window.addEventListener('hashchange', scrollToHighlightFromHash)
+
+    return () => {
+      window.removeEventListener('hashchange', scrollToHighlightFromHash)
+    }
+  }, [])
 
   const pdfDocument = documents.find((d) => d.id === selectedDocumentId)
 
@@ -59,7 +81,6 @@ export function Viewer({ className }: { className?: string }) {
       position: highlight.position,
       content: (
         <ViewerCommentForm
-          placeHolder={highlight.comment ?? ''}
           onSubmit={(input: string) => {
             editHighlight(highlight.id, { comment: input })
             highlighterUtilsRef.current!.setTip(null)
@@ -86,6 +107,7 @@ export function Viewer({ className }: { className?: string }) {
             utilsRef={(_pdfHighlighterUtils) => {
               highlighterUtilsRef.current = _pdfHighlighterUtils
             }}
+            onScrollAway={() => (document.location.hash = '')}
             selectionTip={<ViewerTooltip addHighlight={addHighlight} />}
             textSelectionColor="rgba(255, 226, 143, 1)"
           >
