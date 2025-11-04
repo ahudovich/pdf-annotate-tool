@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function RootLayout(props: LayoutProps<'/'>) {
   return (
     <html lang="en">
-      <body className="antialiased">{props.children}</body>
+      <body className="font-sans antialiased">{props.children}</body>
     </html>
   )
 }
