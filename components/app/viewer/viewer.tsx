@@ -22,6 +22,10 @@ export function Viewer({ className }: { className?: string }) {
   const { documents, selectedDocumentId } = useDatabase()
   const { highlights, addHighlight, deleteHighlight, editHighlight } = useHighlights()
 
+  const filteredHighlights = highlights.filter(
+    (highlight) => highlight.documentId === selectedDocumentId
+  )
+
   const pdfDocument = documents.find((d) => d.id === selectedDocumentId)
 
   if (!pdfDocument) {
@@ -77,7 +81,7 @@ export function Viewer({ className }: { className?: string }) {
           <PdfHighlighter
             pdfDocument={pdfDocument}
             pdfScaleValue={pdfScaleValue}
-            highlights={highlights}
+            highlights={filteredHighlights}
             enableAreaSelection={(event) => event.altKey}
             utilsRef={(_pdfHighlighterUtils) => {
               highlighterUtilsRef.current = _pdfHighlighterUtils
