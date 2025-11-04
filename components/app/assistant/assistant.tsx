@@ -24,7 +24,7 @@ export function Assistant({ className }: { className?: string }) {
         className={cn(
           'bg-background grid h-full w-80 overflow-hidden',
           activeTab === AssistantTab.Annotations && 'grid-rows-[auto_auto_minmax(0,1fr)]',
-          activeTab === AssistantTab.Chat && 'grid-rows-[auto_1fr]',
+          activeTab === AssistantTab.Chat && 'grid-rows-[auto_minmax(0,1fr)]',
           className
         )}
       >
