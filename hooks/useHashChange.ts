@@ -12,7 +12,7 @@ export function useHashChange({
   highlighterUtilsRef: RefObject<PdfHighlighterUtils | null>
 }) {
   const onHashChange = useEffectEvent(() => {
-    const id = document.location.hash.slice(`#${HASH_PREFIX}-`.length)
+    const id = document.location.hash.slice(`#${HASH_PREFIX}`.length)
     const annotation = annotations.find((annotation) => annotation.id === id)
 
     if (annotation && highlighterUtilsRef.current) {
