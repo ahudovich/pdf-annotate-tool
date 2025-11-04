@@ -1,5 +1,6 @@
 'use client'
 
+import { format, parseISO } from 'date-fns'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDatabase } from '@/contexts/db.context'
 import { useHighlights } from '@/contexts/highlights.context'
@@ -39,10 +40,18 @@ export function Assistant({ className }: { className?: string }) {
 function HighlightCard({ highlight }: { highlight: HighlightItem }) {
   return (
     <div className="border-border hover:bg-accent/50 w-full cursor-pointer border-b p-4 transition-colors">
-      <p className="text-foreground mb-1.5 line-clamp-3 text-sm font-medium">
-        {highlight.content.text}
-      </p>
-      <p className="text-muted-foreground line-clamp-3 text-xs font-medium">{highlight.comment}</p>
+      <p className="text-foreground line-clamp-2 text-sm">{highlight.content.text}</p>
+
+      {highlight.comment && (
+        <p className="text-muted-foreground mt-2 line-clamp-2 text-xs">{highlight.comment}</p>
+      )}
+
+      <ul className="text-muted-foreground mt-2 flex items-center text-xs">
+        <li className="after:mx-1 after:content-['•']">
+          {format(parseISO(highlight.createdAt), 'MMM d, yyyy')}
+        </li>
+        <li>Page {highlight.position.boundingRect.pageNumber}</li>
+      </ul>
     </div>
   )
 }
