@@ -36,7 +36,12 @@ const documents = [
 ]
 
 export default function Sidebar({ className }: { className?: string }) {
+  const [searchQuery, setSearchQuery] = useState('')
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null)
+
+  const filteredDocuments = documents.filter((document) =>
+    document.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
     <aside
@@ -59,19 +64,28 @@ export default function Sidebar({ className }: { className?: string }) {
       <div className="border-border border-b p-4">
         <div className="relative">
           <SearchIcon className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
-          <Input placeholder="Search documents..." className="px-8" />
-          <button
-            type="button"
-            className="absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer"
-          >
-            <XIcon className="text-muted-foreground size-3.5" />
-          </button>
+          <Input
+            className="px-8"
+            placeholder="Search documents..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
+
+          {searchQuery && (
+            <button
+              type="button"
+              className="group absolute top-1/2 right-2.5 -translate-y-1/2 cursor-pointer"
+              onClick={() => setSearchQuery('')}
+            >
+              <XIcon className="text-muted-foreground group-hover:text-primary size-3.5 transition-colors" />
+            </button>
+          )}
         </div>
       </div>
 
       {/* Document list */}
       <ScrollArea className="h-full">
-        {documents.map((document) => (
+        {filteredDocuments.map((document) => (
           <DocumentCard
             key={document.id}
             data={document}
