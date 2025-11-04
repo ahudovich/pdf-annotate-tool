@@ -5,7 +5,7 @@ import { PdfHighlighter, PdfLoader } from 'react-pdf-highlighter-extended'
 import { ViewerHighlightContainer } from '@/components/app/viewer/ViewerHighlightContainer'
 import { ViewerToolbar } from '@/components/app/viewer/ViewerToolbar'
 import { ViewerTooltip } from '@/components/app/viewer/ViewerTooltip'
-import { useDatabase } from '@/contexts/db.context'
+import { useDocuments } from '@/contexts/documents.context'
 import { useHighlights } from '@/contexts/highlights.context'
 import { useHashChange } from '@/hooks/useHashChange'
 import type { PdfHighlighterUtils } from 'react-pdf-highlighter-extended'
@@ -22,7 +22,7 @@ export function ViewerContent({
 
   const [zoomValue, setZoomValue] = useState<number | undefined>(undefined)
 
-  const { selectedDocumentId } = useDatabase()
+  const { selectedDocumentId } = useDocuments()
   const { highlights, addHighlight } = useHighlights()
 
   // Auto scroll to highlights when hash changes

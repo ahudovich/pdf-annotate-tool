@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react'
 import { ViewerContent } from '@/components/app/viewer/ViewerContent'
-import { useDatabase } from '@/contexts/db.context'
+import { useDocuments } from '@/contexts/documents.context'
 import { cn } from '@/lib/utils'
 
 export function Viewer({ className }: { className?: string }) {
-  const { documents, selectedDocumentId } = useDatabase()
+  const { documents, selectedDocumentId } = useDocuments()
 
   const pdfDocument = documents.find((document) => document.id === selectedDocumentId)
 

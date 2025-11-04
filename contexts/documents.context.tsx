@@ -3,7 +3,7 @@
 import { createContext, useContext, useState } from 'react'
 import type { DocumentItem } from '@/types/db'
 
-interface DatabaseContextType {
+interface DocumentsContextType {
   documents: Array<DocumentItem>
   selectedDocumentId: DocumentItem['id'] | null
   setSelectedDocumentId: (id: DocumentItem['id'] | null) => void
@@ -11,7 +11,7 @@ interface DatabaseContextType {
   deleteDocument: (id: DocumentItem['id']) => void
 }
 
-const DatabaseContext = createContext<DatabaseContextType>({
+const DocumentsContext = createContext<DocumentsContextType>({
   documents: [],
   selectedDocumentId: null,
   setSelectedDocumentId: () => {},
@@ -19,7 +19,7 @@ const DatabaseContext = createContext<DatabaseContextType>({
   deleteDocument: () => {},
 })
 
-export function DatabaseProvider({ children }: { children: React.ReactNode }) {
+export function DocumentsProvider({ children }: { children: React.ReactNode }) {
   const [documents, setDocuments] = useState<Array<DocumentItem>>([])
   const [selectedDocumentId, setSelectedDocumentId] = useState<DocumentItem['id'] | null>(null)
 
@@ -32,19 +32,19 @@ export function DatabaseProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <DatabaseContext
+    <DocumentsContext
       value={{ documents, selectedDocumentId, setSelectedDocumentId, addDocument, deleteDocument }}
     >
       {children}
-    </DatabaseContext>
+    </DocumentsContext>
   )
 }
 
-export function useDatabase() {
-  const context = useContext(DatabaseContext)
+export function useDocuments() {
+  const context = useContext(DocumentsContext)
 
   if (!context) {
-    throw new Error('`useDatabase` must be used within a `DatabaseProvider`')
+    throw new Error('`useDocuments` must be used within a `DocumentsProvider`')
   }
 
   return context

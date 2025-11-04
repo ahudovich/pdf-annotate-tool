@@ -6,7 +6,7 @@ import { SearchIcon, TrashIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useDatabase } from '@/contexts/db.context'
+import { useDocuments } from '@/contexts/documents.context'
 import { useHighlights } from '@/contexts/highlights.context'
 import { cn } from '@/lib/utils'
 import type { HighlightItem } from '@/types/db'
@@ -15,7 +15,7 @@ export function Assistant({ className }: { className?: string }) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const { highlights } = useHighlights()
-  const { selectedDocumentId } = useDatabase()
+  const { selectedDocumentId } = useDocuments()
 
   const currentDocumentHighlights = highlights.filter(
     (highlight) => highlight.documentId === selectedDocumentId

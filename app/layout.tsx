@@ -1,5 +1,5 @@
 import '@/app/globals.css'
-import { DatabaseProvider } from '@/contexts/db.context'
+import { DocumentsProvider } from '@/contexts/documents.context'
 import { HighlightsProvider } from '@/contexts/highlights.context'
 import type { Metadata } from 'next'
 
@@ -11,9 +11,9 @@ export default function RootLayout(props: LayoutProps<'/'>) {
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <DatabaseProvider>
+        <DocumentsProvider>
           <HighlightsProvider>{props.children}</HighlightsProvider>
-        </DatabaseProvider>
+        </DocumentsProvider>
       </body>
     </html>
   )

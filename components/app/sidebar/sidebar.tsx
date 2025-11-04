@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useDatabase } from '@/contexts/db.context'
+import { useDocuments } from '@/contexts/documents.context'
 import { convertBytesToMB } from '@/lib/file'
 import { cn } from '@/lib/utils'
 import type { DocumentItem } from '@/types/db'
@@ -16,7 +16,7 @@ export function Sidebar({ className }: { className?: string }) {
   const id = useId()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const { documents, setSelectedDocumentId, addDocument } = useDatabase()
+  const { documents, setSelectedDocumentId, addDocument } = useDocuments()
 
   const filteredDocuments = documents.filter((document) =>
     document.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -115,7 +115,7 @@ export function Sidebar({ className }: { className?: string }) {
 }
 
 function DocumentCard({ document }: { document: DocumentItem }) {
-  const { selectedDocumentId, setSelectedDocumentId } = useDatabase()
+  const { selectedDocumentId, setSelectedDocumentId } = useDocuments()
 
   return (
     <div
