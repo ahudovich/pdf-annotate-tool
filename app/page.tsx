@@ -1,13 +1,13 @@
-import AIAssistant from '@/components/AIAssistant/AIAssistant'
-import DocumentList from '@/components/DocumentList/DocumentList'
-import PDFViewer from '@/components/PDFViewer/PDFViewer'
+import Assistant from '@/components/app/assistant/assistant'
+import Sidebar from '@/components/app/sidebar/sidebar'
+import Viewer from '@/components/app/viewer/viewer'
 
 export default async function HomePage() {
   return (
     <div className="bg-background grid h-dvh grid-cols-[auto_1fr_auto] overflow-hidden">
-      <DocumentList />
-      <PDFViewer />
-      <AIAssistant />
+      <Sidebar />
+      <Viewer />
+      <Assistant />
     </div>
   )
 }
