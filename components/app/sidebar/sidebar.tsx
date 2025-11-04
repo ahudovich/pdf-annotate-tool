@@ -12,7 +12,7 @@ import { convertBytesToMB } from '@/lib/file'
 import { cn } from '@/lib/utils'
 import type { DocumentItem } from '@/types/db'
 
-export default function Sidebar({ className }: { className?: string }) {
+export function Sidebar({ className }: { className?: string }) {
   const id = useId()
 
   const [searchQuery, setSearchQuery] = useState('')

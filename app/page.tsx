@@ -1,6 +1,6 @@
-import Assistant from '@/components/app/assistant/assistant'
-import Sidebar from '@/components/app/sidebar/sidebar'
-import Viewer from '@/components/app/viewer/viewer'
+import { Assistant } from '@/components/app/assistant/assistant'
+import { Sidebar } from '@/components/app/sidebar/sidebar'
+import { Viewer } from '@/components/app/viewer/viewer'
 
 export default async function HomePage() {
   return (
