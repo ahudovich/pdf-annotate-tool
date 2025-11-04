@@ -16,7 +16,7 @@ export default function Sidebar({ className }: { className?: string }) {
   const id = useId()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const { documents, addDocument } = useDatabase()
+  const { documents, setSelectedDocumentId, addDocument } = useDatabase()
 
   const filteredDocuments = documents.filter((document) =>
     document.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -26,14 +26,18 @@ export default function Sidebar({ className }: { className?: string }) {
     const file = event.target.files?.[0]
 
     if (file) {
+      const newDocumentId = nanoid()
+
       addDocument({
-        id: nanoid(),
+        id: newDocumentId,
         createdAt: new Date().toISOString(),
         name: file.name,
         filename: file.name,
         file: file,
         size: file.size,
       })
+
+      setSelectedDocumentId(newDocumentId)
     }
   }
 
