@@ -120,7 +120,7 @@ function DocumentCard({ document }: { document: DocumentItem }) {
           <li className="after:mx-1 after:content-['•']">
             {format(parseISO(document.createdAt), 'MMM d, yyyy')}
           </li>
-          <li>{convertBytesToMB(document.size)} MB</li>
+          <li>{convertBytesToMB(document.size)}</li>
         </ul>
       </div>
     </div>
