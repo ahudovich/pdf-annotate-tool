@@ -172,7 +172,10 @@ function DocumentCard({
         className="invisible absolute top-2 right-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100"
         size="sm"
         variant="ghost"
-        onClick={() => handleDeleteDocument(document.id)}
+        onClick={(event) => {
+          event.stopPropagation()
+          handleDeleteDocument(document.id)
+        }}
       >
         <TrashIcon className="size-3.5" />
       </Button>
