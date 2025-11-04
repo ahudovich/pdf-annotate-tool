@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { ZoomInIcon, ZoomOutIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useViewerZoom } from '@/hooks/useViewerZoom'
 
 interface ViewerToolbarProps {
   name: string
@@ -10,31 +10,7 @@ interface ViewerToolbarProps {
 }
 
 export function ViewerToolbar({ name, setPdfScaleValue }: ViewerToolbarProps) {
-  const [zoom, setZoom] = useState<number | null>(null)
-
-  function zoomIn() {
-    if (zoom) {
-      if (zoom < 4) {
-        setPdfScaleValue(zoom + 0.1)
-        setZoom(zoom + 0.1)
-      }
-    } else {
-      setPdfScaleValue(1)
-      setZoom(1)
-    }
-  }
-
-  function zoomOut() {
-    if (zoom) {
-      if (zoom > 0.2) {
-        setPdfScaleValue(zoom - 0.1)
-        setZoom(zoom - 0.1)
-      }
-    } else {
-      setPdfScaleValue(1)
-      setZoom(1)
-    }
-  }
+  const { zoom, zoomIn, zoomOut } = useViewerZoom({ setPdfScaleValue })
 
   return (
     <div className="border-border flex h-(--toolbar-height) items-center justify-between gap-2 border-b bg-white px-4">
