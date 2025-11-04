@@ -1,47 +1,41 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { FileTextIcon, SearchIcon, UploadIcon, XIcon } from 'lucide-react'
+import { nanoid } from 'nanoid'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useDatabase } from '@/contexts/db.context'
+import { convertBytesToMB } from '@/lib/file'
 import { cn } from '@/lib/utils'
-
-const documents = [
-  {
-    id: '1',
-    name: 'Project Proposal',
-    path: '/documents/project-proposal.pdf',
-    size: '2.4 MB',
-    date: '2024-01-15',
-    pages: 24,
-  },
-  {
-    id: '2',
-    name: 'Technical Specifications',
-    path: '/documents/technical-specifications.pdf',
-    size: '1.8 MB',
-    date: '2024-01-14',
-    pages: 18,
-  },
-  {
-    id: '3',
-    name: 'User Research Report',
-    path: '/documents/user-research-report.pdf',
-    size: '3.2 MB',
-    date: '2024-01-12',
-    pages: 32,
-  },
-]
+import type { DocumentItem } from '@/types/db'
 
 export default function Sidebar({ className }: { className?: string }) {
+  const id = useId()
+
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedDocument, setSelectedDocument] = useState<string | null>(null)
+  const { documents, addDocument } = useDatabase()
 
   const filteredDocuments = documents.filter((document) =>
     document.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+
+    if (file) {
+      addDocument({
+        id: nanoid(),
+        createdAt: new Date().toISOString(),
+        name: file.name,
+        filename: file.name,
+        file: file,
+        size: file.size,
+      })
+    }
+  }
 
   return (
     <aside
@@ -54,10 +48,22 @@ export default function Sidebar({ className }: { className?: string }) {
       <div className="border-border border-b p-4">
         <h1 className="text-foreground mb-4 text-lg font-bold">Documents</h1>
 
-        <Button className="w-full" size="sm">
-          <UploadIcon className="size-4" />
-          Upload PDF
-        </Button>
+        <div>
+          <input
+            id={`upload-pdf-${id}`}
+            className="hidden"
+            type="file"
+            accept="application/pdf"
+            onChange={handleUpload}
+          />
+
+          <Button size="sm" asChild>
+            <label className="w-full" htmlFor={`upload-pdf-${id}`}>
+              <UploadIcon className="size-4" />
+              Upload PDF
+            </label>
+          </Button>
+        </div>
       </div>
 
       {/* Search */}
@@ -86,47 +92,35 @@ export default function Sidebar({ className }: { className?: string }) {
       {/* Document list */}
       <ScrollArea className="h-full">
         {filteredDocuments.map((document) => (
-          <DocumentCard
-            key={document.id}
-            data={document}
-            selectedDocument={selectedDocument}
-            setSelectedDocument={setSelectedDocument}
-          />
+          <DocumentCard key={document.id} document={document} />
         ))}
       </ScrollArea>
     </aside>
   )
 }
 
-function DocumentCard({
-  data,
-  selectedDocument,
-  setSelectedDocument,
-}: {
-  data: (typeof documents)[number]
-  selectedDocument: string | null
-  setSelectedDocument: (id: string) => void
-}) {
+function DocumentCard({ document }: { document: DocumentItem }) {
+  const { selectedDocumentId, setSelectedDocumentId } = useDatabase()
+
   return (
     <div
       className={cn(
         'border-border hover:bg-accent/25 grid w-full cursor-pointer grid-cols-[auto_1fr] items-start gap-2.5 border-b p-4 text-left transition-colors',
-        selectedDocument === data.id && 'bg-accent hover:bg-accent'
+        selectedDocumentId === document.id && 'bg-accent hover:bg-accent'
       )}
-      onClick={() => setSelectedDocument(data.id)}
+      onClick={() => setSelectedDocumentId(document.id)}
     >
       <div className="translate-y-0.5">
         <FileTextIcon className="text-muted-foreground size-4" />
       </div>
 
       <div className="grow overflow-hidden">
-        <h2 className="text-foreground mb-1.5 truncate text-sm font-medium">{data.name}</h2>
+        <h2 className="text-foreground mb-1.5 truncate text-sm font-medium">{document.name}</h2>
         <ul className="text-muted-foreground flex items-center text-xs">
           <li className="after:mx-1 after:content-['•']">
-            {format(parseISO(data.date), 'MMM d, yyyy')}
+            {format(parseISO(document.createdAt), 'MMM d, yyyy')}
           </li>
-          <li className="after:mx-1 after:content-['•']">{data.size}</li>
-          <li>{data.pages} pages</li>
+          <li>{convertBytesToMB(document.size)} MB</li>
         </ul>
       </div>
     </div>
