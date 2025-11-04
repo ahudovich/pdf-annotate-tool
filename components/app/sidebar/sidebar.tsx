@@ -23,21 +23,31 @@ export default function Sidebar({ className }: { className?: string }) {
   )
 
   function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
+    const files = event.target.files
 
-    if (file) {
-      const newDocumentId = nanoid()
+    if (files) {
+      let firstDocumentId: string | null = null
+      const fileEntries = Array.from(files).entries()
 
-      addDocument({
-        id: newDocumentId,
-        createdAt: new Date().toISOString(),
-        name: file.name,
-        filename: file.name,
-        file: file,
-        size: file.size,
-      })
+      for (const [index, file] of fileEntries) {
+        const newDocumentId = nanoid()
 
-      setSelectedDocumentId(newDocumentId)
+        if (index === 0) {
+          firstDocumentId = newDocumentId
+        }
+
+        addDocument({
+          id: newDocumentId,
+          createdAt: new Date().toISOString(),
+          name: file.name,
+          filename: file.name,
+          file: file,
+          size: file.size,
+        })
+      }
+
+      // Automatically select the first uploaded file
+      setSelectedDocumentId(firstDocumentId)
     }
   }
 
@@ -58,6 +68,7 @@ export default function Sidebar({ className }: { className?: string }) {
             className="hidden"
             type="file"
             accept="application/pdf"
+            multiple
             onChange={handleUpload}
           />
 
