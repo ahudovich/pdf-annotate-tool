@@ -118,4 +118,9 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* PDF Highlighter */
+  .pdfViewer .page {
+    @apply mb-0!;
+  }
 }
