@@ -1,23 +1,22 @@
 import { useEffect, useEffectEvent } from 'react'
+import { HASH_PREFIX } from '@/enums/constants'
 import type { RefObject } from 'react'
 import type { PdfHighlighterUtils } from 'react-pdf-highlighter-extended'
-import type { HighlightItem } from '@/types/db'
-
-const HASH_PREFIX = '#highlight-'
+import type { AnnotationItem } from '@/types/db'
 
 export function useHashChange({
-  highlights,
+  annotations,
   highlighterUtilsRef,
 }: {
-  highlights: Array<HighlightItem>
+  annotations: Array<AnnotationItem>
   highlighterUtilsRef: RefObject<PdfHighlighterUtils | null>
 }) {
   const onHashChange = useEffectEvent(() => {
-    const id = document.location.hash.slice(HASH_PREFIX.length)
-    const highlight = highlights.find((highlight) => highlight.id === id)
+    const id = document.location.hash.slice(`#${HASH_PREFIX}-`.length)
+    const annotation = annotations.find((annotation) => annotation.id === id)
 
-    if (highlight && highlighterUtilsRef.current) {
-      highlighterUtilsRef.current.scrollToHighlight(highlight)
+    if (annotation && highlighterUtilsRef.current) {
+      highlighterUtilsRef.current.scrollToHighlight(annotation)
     }
   })
 

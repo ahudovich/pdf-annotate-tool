@@ -9,7 +9,7 @@ export interface DocumentItem {
   size: number // bytes
 }
 
-export interface HighlightItem {
+export interface AnnotationItem {
   id: string
   documentId: string
   type: HighlightType

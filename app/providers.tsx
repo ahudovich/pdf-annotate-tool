@@ -1,12 +1,12 @@
 'use client'
 
+import { AnnotationsProvider } from '@/contexts/annotations.context'
 import { DocumentsProvider } from '@/contexts/documents.context'
-import { HighlightsProvider } from '@/contexts/highlights.context'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <DocumentsProvider>
-      <HighlightsProvider>{children}</HighlightsProvider>
+      <AnnotationsProvider>{children}</AnnotationsProvider>
     </DocumentsProvider>
   )
 }

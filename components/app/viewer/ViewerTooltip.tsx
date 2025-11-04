@@ -8,10 +8,10 @@ import { ViewerCommentForm } from '@/components/app/viewer/ViewerCommentForm'
 import { useDocuments } from '@/contexts/documents.context'
 
 interface ViewerTooltipProps {
-  addHighlight: (documentId: string, highlight: GhostHighlight, comment: string) => void
+  addAnnotation: (documentId: string, annotation: GhostHighlight, comment: string) => void
 }
 
-export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
+export function ViewerTooltip({ addAnnotation }: ViewerTooltipProps) {
   const [isCompact, setIsCompact] = useState(true)
   const selectionRef = useRef<PdfSelection | null>(null)
 
@@ -24,8 +24,8 @@ export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
     updateTipPosition!()
   }, [isCompact, updateTipPosition])
 
-  function handleAddHighlight(comment: string) {
-    addHighlight(
+  function handleAddAnnotation(comment: string) {
+    addAnnotation(
       selectedDocumentId!,
       {
         content: selectionRef.current!.content,
@@ -50,11 +50,11 @@ export function ViewerTooltip({ addHighlight }: ViewerTooltipProps) {
             selectionRef.current!.makeGhostHighlight()
           }}
         >
-          Add highlight
+          Add annotation
         </button>
       ) : (
         <div className="w-48 p-2">
-          <ViewerCommentForm onSubmit={handleAddHighlight} />
+          <ViewerCommentForm onSubmit={handleAddAnnotation} />
         </div>
       )}
     </div>

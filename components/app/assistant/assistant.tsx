@@ -6,25 +6,26 @@ import { SearchIcon, TrashIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useAnnotations } from '@/contexts/annotations.context'
 import { useDocuments } from '@/contexts/documents.context'
-import { useHighlights } from '@/contexts/highlights.context'
+import { HASH_PREFIX } from '@/enums/constants'
 import { cn } from '@/lib/utils'
-import type { HighlightItem } from '@/types/db'
+import type { AnnotationItem } from '@/types/db'
 
 export function Assistant({ className }: { className?: string }) {
   const [searchQuery, setSearchQuery] = useState('')
 
-  const { highlights } = useHighlights()
+  const { annotations } = useAnnotations()
   const { selectedDocumentId } = useDocuments()
 
-  const currentDocumentHighlights = highlights.filter(
-    (highlight) => highlight.documentId === selectedDocumentId
+  const currentDocumentAnnotations = annotations.filter(
+    (annotation) => annotation.documentId === selectedDocumentId
   )
 
-  const filteredHighlights = currentDocumentHighlights.filter(
-    (highlight) =>
-      highlight.content.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      highlight.comment?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAnnotations = currentDocumentAnnotations.filter(
+    (annotation) =>
+      annotation.content.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      annotation.comment?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -45,7 +46,7 @@ export function Assistant({ className }: { className?: string }) {
           <SearchIcon className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
           <Input
             className="px-8"
-            placeholder="Search highlights..."
+            placeholder="Search annotations..."
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
           />
@@ -62,52 +63,52 @@ export function Assistant({ className }: { className?: string }) {
         </div>
       </div>
 
-      {/* Highlights list */}
+      {/* Annotations list */}
       <ScrollArea className="h-full">
-        {filteredHighlights.map((highlight) => (
-          <HighlightCard key={highlight.id} highlight={highlight} />
+        {filteredAnnotations.map((annotation) => (
+          <AnnotationCard key={annotation.id} annotation={annotation} />
         ))}
       </ScrollArea>
     </aside>
   )
 }
 
-function HighlightCard({ highlight }: { highlight: HighlightItem }) {
-  const { deleteHighlight } = useHighlights()
+function AnnotationCard({ annotation }: { annotation: AnnotationItem }) {
+  const { deleteAnnotation } = useAnnotations()
 
-  function scrollToHighlight() {
-    document.location.hash = `highlight-${highlight.id}`
+  function scrollToAnnotation() {
+    document.location.hash = `${HASH_PREFIX}${annotation.id}`
   }
 
-  function handleDeleteHighlight(event: React.MouseEvent<HTMLButtonElement>) {
+  function handleDeleteAnnotation(event: React.MouseEvent<HTMLButtonElement>) {
     event.stopPropagation()
-    deleteHighlight(highlight.id)
+    deleteAnnotation(annotation.id)
   }
 
   return (
     <div
       className="border-border hover:bg-accent/50 w-full cursor-pointer border-b p-4 transition-colors"
-      onClick={scrollToHighlight}
+      onClick={scrollToAnnotation}
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <ul className="text-muted-foreground flex items-center text-xs">
           <li className="after:mx-1 after:content-['•']">
-            {format(parseISO(highlight.createdAt), 'MMM d, yyyy')}
+            {format(parseISO(annotation.createdAt), 'MMM d, yyyy')}
           </li>
-          <li>Page {highlight.position.boundingRect.pageNumber}</li>
+          <li>Page {annotation.position.boundingRect.pageNumber}</li>
         </ul>
 
         <div className="flex items-center gap-0.5">
-          <Button size="sm" variant="ghost" onClick={handleDeleteHighlight}>
+          <Button size="sm" variant="ghost" onClick={handleDeleteAnnotation}>
             <TrashIcon className="size-3.5" />
           </Button>
         </div>
       </div>
 
-      <p className="text-foreground mb-2 line-clamp-2 text-sm">{highlight.content.text}</p>
+      <p className="text-foreground mb-2 line-clamp-2 text-sm">{annotation.content.text}</p>
 
-      {highlight.comment && (
-        <p className="text-muted-foreground line-clamp-2 text-xs">{highlight.comment}</p>
+      {annotation.comment && (
+        <p className="text-muted-foreground line-clamp-2 text-xs">{annotation.comment}</p>
       )}
     </div>
   )

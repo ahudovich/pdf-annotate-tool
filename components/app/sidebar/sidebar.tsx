@@ -7,8 +7,8 @@ import { nanoid } from 'nanoid'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useAnnotations } from '@/contexts/annotations.context'
 import { useDocuments } from '@/contexts/documents.context'
-import { useHighlights } from '@/contexts/highlights.context'
 import { convertBytesToMB } from '@/lib/file'
 import { cn } from '@/lib/utils'
 import type { DocumentItem } from '@/types/db'
@@ -17,7 +17,7 @@ export function Sidebar({ className }: { className?: string }) {
   const id = useId()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const { highlights, deleteHighlight } = useHighlights()
+  const { annotations, deleteAnnotation } = useAnnotations()
   const { documents, selectedDocumentId, setSelectedDocumentId, addDocument, deleteDocument } =
     useDocuments()
 
@@ -57,10 +57,10 @@ export function Sidebar({ className }: { className?: string }) {
   function handleDeleteDocument(id: string) {
     deleteDocument(id)
 
-    const documentHighlights = highlights.filter((highlight) => highlight.documentId === id)
+    const documentAnnotations = annotations.filter((annotation) => annotation.documentId === id)
 
-    for (const highlight of documentHighlights) {
-      deleteHighlight(highlight.id)
+    for (const annotation of documentAnnotations) {
+      deleteAnnotation(annotation.id)
     }
 
     if (selectedDocumentId === id) {
@@ -147,7 +147,7 @@ function DocumentCard({
   return (
     <div
       className={cn(
-        'group relative border-border hover:bg-accent/50 grid w-full cursor-pointer grid-cols-[auto_1fr] gap-2.5 border-b p-4 transition-colors',
+        'group border-border hover:bg-accent/50 relative grid w-full cursor-pointer grid-cols-[auto_1fr] gap-2.5 border-b p-4 transition-colors',
         selectedDocumentId === document.id && 'bg-accent hover:bg-accent'
       )}
       onClick={() => setSelectedDocumentId(document.id)}
@@ -157,7 +157,9 @@ function DocumentCard({
       </div>
 
       <div className="grow overflow-hidden">
-        <h2 className="text-foreground mb-1.5 pr-8 truncate text-sm font-medium">{document.name}</h2>
+        <h2 className="text-foreground mb-1.5 truncate pr-8 text-sm font-medium">
+          {document.name}
+        </h2>
         <ul className="text-muted-foreground flex items-center text-xs">
           <li className="after:mx-1 after:content-['•']">
             {format(parseISO(document.createdAt), 'MMM d, yyyy')}
@@ -167,7 +169,7 @@ function DocumentCard({
       </div>
 
       <Button
-        className="absolute top-2 right-2 invisible opacity-0 transition-all group-hover:visible group-hover:opacity-100"
+        className="invisible absolute top-2 right-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100"
         size="sm"
         variant="ghost"
         onClick={() => handleDeleteDocument(document.id)}

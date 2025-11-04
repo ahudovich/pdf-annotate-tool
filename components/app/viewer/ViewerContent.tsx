@@ -5,8 +5,8 @@ import { PdfHighlighter, PdfLoader } from 'react-pdf-highlighter-extended'
 import { ViewerHighlightContainer } from '@/components/app/viewer/ViewerHighlightContainer'
 import { ViewerToolbar } from '@/components/app/viewer/ViewerToolbar'
 import { ViewerTooltip } from '@/components/app/viewer/ViewerTooltip'
+import { useAnnotations } from '@/contexts/annotations.context'
 import { useDocuments } from '@/contexts/documents.context'
-import { useHighlights } from '@/contexts/highlights.context'
 import { useHashChange } from '@/hooks/useHashChange'
 import type { PdfHighlighterUtils } from 'react-pdf-highlighter-extended'
 import type { DocumentItem } from '@/types/db'
@@ -23,13 +23,13 @@ export function ViewerContent({
   const [zoomValue, setZoomValue] = useState<number | undefined>(undefined)
 
   const { selectedDocumentId } = useDocuments()
-  const { highlights, addHighlight } = useHighlights()
+  const { annotations, addAnnotation } = useAnnotations()
 
   // Auto scroll to highlights when hash changes
-  useHashChange({ highlights, highlighterUtilsRef })
+  useHashChange({ annotations, highlighterUtilsRef })
 
-  const filteredHighlights = highlights.filter(
-    (highlight) => highlight.documentId === selectedDocumentId
+  const filteredAnnotations = annotations.filter(
+    (annotation) => annotation.documentId === selectedDocumentId
   )
 
   return (
@@ -40,9 +40,9 @@ export function ViewerContent({
           <PdfHighlighter
             pdfDocument={pdfDocument}
             pdfScaleValue={zoomValue}
-            highlights={filteredHighlights}
+            highlights={filteredAnnotations}
             onScrollAway={() => (document.location.hash = '')}
-            selectionTip={<ViewerTooltip addHighlight={addHighlight} />}
+            selectionTip={<ViewerTooltip addAnnotation={addAnnotation} />}
             textSelectionColor="rgba(255, 226, 143, 1)"
             utilsRef={(pdfHighlighterUtils) => {
               highlighterUtilsRef.current = pdfHighlighterUtils
